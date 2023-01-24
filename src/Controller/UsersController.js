@@ -4,7 +4,6 @@ import UsersModel from "../Models/UsersModel.js";
 
 // ==== UPDATE USER
 const updateUser = async (req, res, next) => {
-    console.log(req.body);
     try {
         const updatedUser = await UsersModel.findByIdAndUpdate(
             req.params.id,
@@ -26,9 +25,13 @@ const deleteUser = async (req, res, next) => {
 // ==== GET ONE USER BY ID
 const getUser = async (req, res, next) => {
     try {
+        console.log("getNext===")
         const findSingleUser = await UsersModel.findById(req.params.id)
         res.status(200).json(findSingleUser)
-    } catch (err) { next(err) }
+    } catch (err) {
+       
+        next(err)
+    }
 }
 
 // ==== GET All USER 

@@ -20,6 +20,6 @@ const usersRoute = express.Router();
 usersRoute.put('/:id', verifyUser, updateUser);
 usersRoute.delete('/:id', verifyUser, deleteUser);
 usersRoute.get('/:id', verifyUser, getUser);
-// usersRoute.get('/', verifyAdmin, getAllUser)
-usersRoute.get('/', getAllUser)
+ // usersRoute.get('/', verifyAdmin, getAllUser)
+ usersRoute.get('/', getAllUser)
 export default usersRoute

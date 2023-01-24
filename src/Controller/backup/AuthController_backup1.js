@@ -2,9 +2,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-
-import UsersModel from "../Models/UsersModel.js";
-import { createError, createSuccess } from "../Utils/Error.js";
+import UsersModel from "../../Models/UsersModel.js";
+import { createError, createSuccess } from "../../Utils/Error.js";
 
 const registerHandler = async (req, res, next) => {
     try {
@@ -14,18 +13,32 @@ const registerHandler = async (req, res, next) => {
         const newUser = new UsersModel({
             username: req.body.username,
             email: req.body.email,
-            password: hash
+            password: hash,
         })
-        await newUser.save()
-        next(createSuccess(200, "You has been registered successfuly"))
 
-    } catch (err) { next(err) }
+        const user = await UsersModel.findOne({
+            $or: [{ username: req.body.username }, { email: req.body.email }]
+        })
+
+        // check user exit in User Api
+        if (user !== null) {
+            user.username === newUser.username && next(createError(400, "This user name already exit"))
+            user.email === newUser.email && next(createError(400, "This email already exit"))
+            return true
+        }
+
+        next(createSuccess(200, "You has been registered successfuly"))
+        await newUser.save()
+    }
+    catch (err) { next(err) }
 }
 
 
 const loginHandler = async (req, res, next) => {
     try {
-        const user = await UsersModel.findOne({ email: req.body.email })
+        const user = await UsersModel.findOne({ username: req.body.username })
+
+
         if (!user) return next(createError(404, "User Not Found"))
 
         const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
@@ -34,7 +47,7 @@ const loginHandler = async (req, res, next) => {
         const token = jwt.sign({ id: user._id, admin: user.isAdmin }, process.env.JWT);
 
         const { username, password, ...otherDetails } = user._doc
-        res.cookie("ACCESS_TOKEN", token, { httpOnly: true }).status(200).json({ ...otherDetails })
+        res.cookie("access_token", token, { httpOnly: true }).status(200).json({ ...otherDetails })
 
     } catch (err) { next(err) }
 }

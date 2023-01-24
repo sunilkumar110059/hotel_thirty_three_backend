@@ -14,8 +14,8 @@ import usersRoute from './Routes/usersRoute.js';
 const app = express();
 app.use(express.json())
 app.use(cors());
-
 app.use(cookieParser())
+
 app.use('/api/auth', authRoute)
 app.use('/api/hotels', hotelsRoute)
 app.use('/api/rooms', roomsRoute)
@@ -23,9 +23,10 @@ app.use('/api/users', usersRoute)
 
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
-    const errorMessage = err.message || " Something Went Wrong!";
+    const errorMessage = err.message || "Something Went Wrong!";
+    const successMsg = err.success || false
     return res.status(errorStatus).json({
-        success: false,
+        success: successMsg,
         status: errorStatus,
         message: errorMessage,
         stack: err.stack

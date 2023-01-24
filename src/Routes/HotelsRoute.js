@@ -4,6 +4,14 @@ import { verifyAdmin } from '../Utils/VerifyToken.js';
 const hotelsRoute = express.Router();
 
 
+// const createHotel = async (req, res, next) => {
+//     const newHotel = new HotelsModel(req.body)
+//     try {
+//         const savedHotel = await newHotel.save();
+//         res.status(200).json(savedHotel)
+//     } catch (err) { next(err) }
+// }
+
 
 hotelsRoute.post('/', verifyAdmin, createHotel);
 

@@ -1,10 +1,17 @@
 import express from 'express';
 const roomsRoute = express.Router();
-
-roomsRoute.get('/', (req, res) => {
-    res.send("This is Rooms Route")
-})
+import { createRoom, updateRoom, deleteRoom, getRoom, getAllRoom } from '../Controller/RoomsController.js';
+import { verifyAdmin, verifyUser } from '../Utils/VerifyToken.js';
 
 
+roomsRoute.post('/:hotelid', verifyAdmin, createRoom)
+
+roomsRoute.put('/:id', verifyAdmin, updateRoom);
+
+roomsRoute.delete('/:id/:hotelid', verifyAdmin, deleteRoom);
+
+roomsRoute.get('/:id', getRoom);
+
+roomsRoute.get('/', getAllRoom)
 
 export default roomsRoute
